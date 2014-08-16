@@ -19,6 +19,7 @@ namespace Timers
         // If there is any data in a timer we want to store, it MUST be in this class.
         private string m_Name;
         private DateTime m_StartTime;
+        private TimeSpan m_StartOffset;
         private TimeSpan m_Length;
         private Parsetime ParseTime = new Parsetime();
         private Color m_StartBack = Color.Black;
@@ -28,7 +29,7 @@ namespace Timers
         public TimerDatastore(SerializationInfo info, StreamingContext ctxt)
         {
             m_Name = info.GetString("m_Name");
-            m_StartTime = info.GetDateTime("m_StartTime");
+            m_StartOffset = (TimeSpan)info.GetValue("m_StartOffset", typeof(TimeSpan));
             m_Length = (TimeSpan)info.GetValue("m_Length", typeof(TimeSpan));
         }
 
@@ -37,7 +38,7 @@ namespace Timers
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("m_Name", m_Name);
-            info.AddValue("m_StartTime", m_StartTime);
+            info.AddValue("m_StartOffset", m_StartOffset);
             info.AddValue("m_Length", m_Length);
             //info.AddValue("authserver", authserver);
         }
@@ -57,10 +58,10 @@ namespace Timers
         }
 
         // Initialize with a start time, length (the variable is incorrectly named), and a human-friendly name
-        public TimerDatastore(string initStartTime, string initEndTime, string initName)
+        public TimerDatastore(string initStartOffset, string initEndTime, string initName)
         {
             // Parse our strings
-            Start = ParseTime.ParseDT(initStartTime);
+            StartOffset = ParseTime.ParseTS(initStartOffset);
             Length = ParseTime.ParseTS(initEndTime);
 
             m_Name = initName;
@@ -93,12 +94,12 @@ namespace Timers
         }
 
         // Easy update method for actionClockControl use
-        public bool Update(string startTime, string endTime)
+        public bool Update(string startOffset, string endTime)
         {
             try
             {
                 // Parse start and length
-                Start = ParseTime.ParseDT(startTime);
+                StartOffset = ParseTime.ParseTS(startOffset);
                 Length = ParseTime.ParseTS(endTime);
                 return true;
             }
@@ -108,17 +109,23 @@ namespace Timers
             }
         }
 
-        public bool UpdateStart(string startTime)
+        public bool UpdateStart(string startOffset)
         {
             try
             {
-                Start = ParseTime.ParseDT(startTime);
+                StartOffset = ParseTime.ParseTS(startOffset);
                 return true;
             }
             catch
             {
                 return false;
             }
+        }
+
+        public bool UpdateStart(TimeSpan startOffset)
+        {
+            StartOffset = startOffset;
+            return true;
         }
 
         public bool UpdateLength(string lengthTime)
@@ -135,15 +142,15 @@ namespace Timers
         }
 
         // Start is public get, private set. Don't ever let other classes directly mess with DateTimes
-        public DateTime Start
+        public TimeSpan StartOffset
         {
             get
             {
-                return m_StartTime;
+                return m_StartOffset;
             }
             private set
             {
-                m_StartTime = value;
+                m_StartOffset = value;
             }
         }
 
@@ -179,7 +186,7 @@ namespace Timers
         {
             get
             {
-                return DateTime.Now - Start;
+                return DateTime.Now - MasterTime.GetClock().Add(m_StartOffset);
             }
         }
 
@@ -188,7 +195,7 @@ namespace Timers
         {
             get
             {
-                return Start + Length;
+                return MasterTime.GetClock().Add(m_StartOffset) + Length;
             }
         }
 

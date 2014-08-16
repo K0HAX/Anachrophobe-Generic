@@ -33,10 +33,9 @@ namespace Anachrophobe
             this.components = new System.ComponentModel.Container();
             this.uxFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            
+            this.uxClockSet = new System.Windows.Forms.Button();
             this.uxLengthOfAction = new System.Windows.Forms.MaskedTextBox();
             this.uxTimeOfAction = new System.Windows.Forms.MaskedTextBox();
-            this.uxLicenseText = new System.Windows.Forms.Label();
             this.uxKillProgram = new System.Windows.Forms.Button();
             this.uxCurrentTime = new System.Windows.Forms.TextBox();
             this.uxNameOfAction = new System.Windows.Forms.TextBox();
@@ -45,8 +44,8 @@ namespace Anachrophobe
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.ClockTimer = new System.Windows.Forms.Timer(this.components);
-            this.uxYUPmode = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.usSetMasterToNow = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -56,19 +55,19 @@ namespace Anachrophobe
             this.uxFlowPanel.AutoScroll = true;
             this.uxFlowPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.uxFlowPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uxFlowPanel.Location = new System.Drawing.Point(3, 26);
+            this.uxFlowPanel.Location = new System.Drawing.Point(3, 3);
             this.uxFlowPanel.Name = "uxFlowPanel";
-            this.uxFlowPanel.Size = new System.Drawing.Size(1018, 591);
+            this.uxFlowPanel.Size = new System.Drawing.Size(1018, 614);
             this.uxFlowPanel.TabIndex = 13;
             // 
             // panel1
             // 
             this.panel1.AutoSize = true;
             this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            
+            this.panel1.Controls.Add(this.usSetMasterToNow);
+            this.panel1.Controls.Add(this.uxClockSet);
             this.panel1.Controls.Add(this.uxLengthOfAction);
             this.panel1.Controls.Add(this.uxTimeOfAction);
-            this.panel1.Controls.Add(this.uxLicenseText);
             this.panel1.Controls.Add(this.uxKillProgram);
             this.panel1.Controls.Add(this.uxCurrentTime);
             this.panel1.Controls.Add(this.uxNameOfAction);
@@ -81,6 +80,19 @@ namespace Anachrophobe
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1024, 145);
             this.panel1.TabIndex = 12;
+            // 
+            // uxClockSet
+            // 
+            this.uxClockSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.uxClockSet.ForeColor = System.Drawing.Color.White;
+            this.uxClockSet.Location = new System.Drawing.Point(868, 119);
+            this.uxClockSet.Name = "uxClockSet";
+            this.uxClockSet.Size = new System.Drawing.Size(77, 23);
+            this.uxClockSet.TabIndex = 100;
+            this.uxClockSet.TabStop = false;
+            this.uxClockSet.Text = "Set Master";
+            this.uxClockSet.UseVisualStyleBackColor = true;
+            this.uxClockSet.Click += new System.EventHandler(this.uxClockSet_Click);
             // 
             // uxLengthOfAction
             // 
@@ -103,15 +115,6 @@ namespace Anachrophobe
             this.uxTimeOfAction.Size = new System.Drawing.Size(136, 20);
             this.uxTimeOfAction.TabIndex = 1;
             this.uxTimeOfAction.TextChanged += new System.EventHandler(this.uxTimeOfAction_TextChanged);
-            // 
-            // uxLicenseText
-            // 
-            this.uxLicenseText.AutoSize = true;
-            this.uxLicenseText.Location = new System.Drawing.Point(868, 124);
-            this.uxLicenseText.Name = "uxLicenseText";
-            this.uxLicenseText.Size = new System.Drawing.Size(60, 13);
-            this.uxLicenseText.TabIndex = 12;
-            this.uxLicenseText.Text = "Unlicensed";
             // 
             // uxKillProgram
             // 
@@ -173,9 +176,10 @@ namespace Anachrophobe
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(5, 124);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 13);
+            this.label1.Size = new System.Drawing.Size(64, 13);
             this.label1.TabIndex = 7;
-            this.label1.Text = "Time of Action";
+            this.label1.Text = "Master Start";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
@@ -191,22 +195,11 @@ namespace Anachrophobe
             this.ClockTimer.Enabled = true;
             this.ClockTimer.Tick += new System.EventHandler(this.ClockTimer_Tick);
             // 
-            // uxYUPmode
-            // 
-            this.uxYUPmode.AutoSize = true;
-            this.uxYUPmode.Location = new System.Drawing.Point(3, 3);
-            this.uxYUPmode.Name = "uxYUPmode";
-            this.uxYUPmode.Size = new System.Drawing.Size(96, 17);
-            this.uxYUPmode.TabIndex = 5;
-            this.uxYUPmode.Text = "YRU-Up Mode";
-            this.uxYUPmode.UseVisualStyleBackColor = true;
-            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Controls.Add(this.uxYUPmode, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.uxFlowPanel, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -217,6 +210,19 @@ namespace Anachrophobe
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1024, 620);
             this.tableLayoutPanel1.TabIndex = 15;
+            // 
+            // usSetMasterToNow
+            // 
+            this.usSetMasterToNow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.usSetMasterToNow.ForeColor = System.Drawing.Color.White;
+            this.usSetMasterToNow.Location = new System.Drawing.Point(951, 119);
+            this.usSetMasterToNow.Name = "usSetMasterToNow";
+            this.usSetMasterToNow.Size = new System.Drawing.Size(77, 23);
+            this.usSetMasterToNow.TabIndex = 101;
+            this.usSetMasterToNow.TabStop = false;
+            this.usSetMasterToNow.Text = "Master Now";
+            this.usSetMasterToNow.UseVisualStyleBackColor = true;
+            this.usSetMasterToNow.Click += new System.EventHandler(this.usSetMasterToNow_Click);
             // 
             // uxContainerForm
             // 
@@ -237,7 +243,6 @@ namespace Anachrophobe
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -256,12 +261,12 @@ namespace Anachrophobe
         private System.Windows.Forms.TextBox uxCurrentTime;
         private System.Windows.Forms.Timer ClockTimer;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label uxLicenseText;
         private System.Windows.Forms.FlowLayoutPanel uxFlowPanel;
-        private System.Windows.Forms.CheckBox uxYUPmode;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.MaskedTextBox uxTimeOfAction;
         private System.Windows.Forms.MaskedTextBox uxLengthOfAction;
+        private System.Windows.Forms.Button uxClockSet;
+        private System.Windows.Forms.Button usSetMasterToNow;
         
     }
 }

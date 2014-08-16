@@ -63,11 +63,13 @@ namespace Anachrophobe
             this.uxDebugBtn.TabIndex = 0;
             this.uxDebugBtn.Text = "Debug";
             this.uxDebugBtn.Click += new System.EventHandler(this.uxDebugBtn_Click);
-            this.uxLicenseText.Hide();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Timers.MasterTime.SetClock(DateTime.Now.AddMinutes(10));
+            uxTimeOfAction.Text = Timers.MasterTime.GetClock().ToString("MM/dd/yyyy hh:mm:ss tt");
+            Timers.MasterTime.SetOffset("00:00:00");
             DebugCode();
             //EventMessenger.Changed += EventMessenger_Changed;
 
@@ -83,7 +85,6 @@ namespace Anachrophobe
             // StringBuilder is a more efficient way of creating strings than concatination.
             StringBuilder licenseText = new StringBuilder();
             licenseText.Append("Standard GPL License");
-            uxLicenseText.Text = licenseText.ToString();
 
             // We need to know how big the screen is, this application is always full screen
             Height = Screen.PrimaryScreen.WorkingArea.Height;
@@ -131,34 +132,21 @@ namespace Anachrophobe
             {
                 if (uxFlowPanel.Controls.Count == 0)
                 {
-                    if (uxYUPmode.Checked == true)
-                    {
-                        // The final true in this function is for telling the control it is to re-start itself with a new date one week after the first
-                        // this parameter is optional.
-                        // Make a new actionClockControl
-                        actionClockControl scc = new actionClockControl(uxTimeOfAction.Text, uxLengthOfAction.Text, uxNameOfAction.Text, true);
-                        // Put the control into the FlowPanel
-                        scc.Parent = uxFlowPanel;
-                        // Display the control
-                        scc.Show();
-                    }
-                    else
-                    {
-                        // Make a normal actionClockControl
-                        actionClockControl scc = new actionClockControl(uxTimeOfAction.Text, uxLengthOfAction.Text, uxNameOfAction.Text);
-                        scc.Parent = uxFlowPanel;
-                        scc.Show();
-                    }
+                    // Make a normal actionClockControl
+                    actionClockControl scc = new actionClockControl(Timers.MasterTime.GetOffset().ToString(), uxLengthOfAction.Text, uxNameOfAction.Text);
+                    Timers.MasterTime.SetOffset(Timers.MasterTime.GetOffset(), uxLengthOfAction.Text);
+                    scc.Parent = uxFlowPanel;
+                    scc.Show();
                 }
                 else
                 {
-                    actionClockControl scc = new actionClockControl(uxTimeOfAction.Text, uxLengthOfAction.Text, uxNameOfAction.Text);
+                    actionClockControl scc = new actionClockControl(Timers.MasterTime.GetOffset().ToString(), uxLengthOfAction.Text, uxNameOfAction.Text);
+                    Timers.MasterTime.SetOffset(Timers.MasterTime.GetOffset(), uxLengthOfAction.Text);
                     scc.Parent = uxFlowPanel;
                     scc.Show();
                 }
                 // Blank all the input parameters and set the focus to the first one.
                 // This makes it easier to begin typing the next set of parameters
-                uxTimeOfAction.Text = "";
                 uxNameOfAction.Text = "";
                 uxLengthOfAction.Text = "";
                 uxTimeOfAction.Focus();
@@ -215,18 +203,9 @@ namespace Anachrophobe
                 {
                     if (uxFlowPanel.Controls.Count == 0)
                     {
-                        if (uxYUPmode.Checked == true)
-                        {
-                            actionClockControl scc = new actionClockControl(uxTimeOfAction.Text, uxLengthOfAction.Text, uxNameOfAction.Text, true);
-                            scc.Parent = uxFlowPanel;
-                            scc.Show();
-                        }
-                        else
-                        {
-                            actionClockControl scc = new actionClockControl(uxTimeOfAction.Text, uxLengthOfAction.Text, uxNameOfAction.Text);
-                            scc.Parent = uxFlowPanel;
-                            scc.Show();
-                        }
+                        actionClockControl scc = new actionClockControl(uxTimeOfAction.Text, uxLengthOfAction.Text, uxNameOfAction.Text);
+                        scc.Parent = uxFlowPanel;
+                        scc.Show();
                     }
                     else
                     {
@@ -264,6 +243,23 @@ namespace Anachrophobe
             actionClockControl scc = new actionClockControl(newDate, "00:01:00", "Test " + m_Container.Timers.Count());
             scc.Parent = uxFlowPanel;
             scc.Show();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void uxClockSet_Click(object sender, EventArgs e)
+        {
+            Parsetime pt = new Parsetime();
+            Timers.MasterTime.SetClock(pt.ParseDT(uxTimeOfAction.Text));
+        }
+
+        private void usSetMasterToNow_Click(object sender, EventArgs e)
+        {
+            Timers.MasterTime.SetClock(DateTime.Now);
+            uxTimeOfAction.Text = Timers.MasterTime.GetClock().ToString();
         }
     }
 }

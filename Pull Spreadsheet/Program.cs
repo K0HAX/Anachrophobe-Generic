@@ -20,7 +20,6 @@ namespace Pull_Spreadsheet
             Console.Write("Google username: ");
             string username = Console.ReadLine();
             Console.Write("Google password: ");
-            
             // Password Section
             ConsoleKeyInfo key;
             string password = "";
@@ -46,16 +45,17 @@ namespace Pull_Spreadsheet
             Console.WriteLine();
             // END section
 
-            Console.Write("Date of Show (always Saturday) (use format \"MM/DD/YYYY\": ");
-            string showDate = Console.ReadLine();
+            Console.Write("Document Name: ");
+            string docName = Console.ReadLine();
 
-            formatSheet mySheet = new formatSheet(username, password, "Yru-Up Time Format 7/27/13 timefix", "Sheet1");
+            formatSheet mySheet = new formatSheet(username, password, docName, "Sheet1");
 
             TimerContainerStore myContainer = new TimerContainerStore();
 
             foreach (DataRow row in mySheet.dt.Rows)
             {
                 TimerDatastore myData = new TimerDatastore();
+                myData.UpdateStart(MasterTime.GetOffset());
                 int myColumn = 0;
                 foreach (object column in row.ItemArray)
                 {
@@ -64,14 +64,12 @@ namespace Pull_Spreadsheet
                         switch (myColumn)
                         {
                             case 0:
-                                myData.UpdateStart(showDate + " " + column.ToString() + "am");
+                                myData.UpdateLength(column.ToString());
+                                MasterTime.SetOffset(MasterTime.GetOffset(), column.ToString());
                                 //Console.WriteLine(showDate + " " + column.ToString() + "am");
                                 break;
                             case 1:
                                 myData.Name = column.ToString();
-                                break;
-                            case 2:
-                                myData.UpdateLength(column.ToString());
                                 break;
                             default:
                                 break;
@@ -84,8 +82,8 @@ namespace Pull_Spreadsheet
 
             foreach (TimerDatastore timer in myContainer.Timers)
             {
-                Console.WriteLine("Start Time: " + timer.StartTime.ToString());
-                Console.WriteLine("End Time: " + timer.EndTime.ToString());
+                Console.WriteLine("Start Offset: " + timer.StartOffset.ToString());
+                Console.WriteLine("End Offset: " + timer.Length.ToString());
                 Console.WriteLine("Label: " + timer.Name);
                 Console.WriteLine("-----------");
             }

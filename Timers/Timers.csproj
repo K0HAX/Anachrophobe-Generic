@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MasterTime.cs" />
     <Compile Include="Parsetime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveStore.cs" />

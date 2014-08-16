@@ -29,7 +29,7 @@ namespace Anachrophobe
 
             m_Action = inAction;
 
-            uxTimeOfAction.Text = m_Action.Start.ToString();
+            uxTimeOfAction.Text = m_Action.StartOffset.ToString();
             uxEndOfAction.Text = m_Action.Length.ToString();
             uxNameLabel.Text = m_Action.Name;
         }
@@ -43,7 +43,7 @@ namespace Anachrophobe
                 blinkTimer.Enabled = false;
                 m_BlinkTrack = 0;
                 m_BlinkRunning = false;
-                uxTimeOfAction.Text = m_Action.Start.ToString();
+                uxTimeOfAction.Text = m_Action.StartOffset.ToString();
                 uxEndOfAction.Text = m_Action.Length.ToString();
                 m_Action.Background_Start = Color.Black;
                 m_Action.Background_End = Color.Black;

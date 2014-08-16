@@ -56,17 +56,11 @@ namespace Pull_Spreadsheet
                         worksheetRow.Elements[0].Value.ToString();
                     string scanData1 =
                         worksheetRow.Elements[1].Value.ToString();
-                    string scanData2 =
-                        worksheetRow.Elements[2].Value.ToString();
-                    string scanData3 =
-                        worksheetRow.Elements[2].Value.ToString();
                     string[] arSD = new string[100];
 
                     DataRow dr = dt.NewRow();
                     dr["A"] = scanData;
                     dr["B"] = scanData1;
-                    dr["C"] = scanData2;
-                    dr["D"] = scanData3;
                     dt.Rows.Add(dr);
 
                 }

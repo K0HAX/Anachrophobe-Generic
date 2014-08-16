@@ -14,7 +14,6 @@ namespace Anachrophobe
         [STAThread]
         static void Main()
         {
-            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             sk_Changed(new object(), EventArgs.Empty);

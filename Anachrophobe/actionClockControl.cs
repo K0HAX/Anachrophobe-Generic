@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using Timers;
 using System.Threading;
-using Pushover;
 
 namespace Anachrophobe
 {
@@ -32,12 +31,9 @@ namespace Anachrophobe
         private int m_ErrorCount;
         // m_MaxError determines how many errors m_ErrorCount can hit before the control self-destructs
         private static int m_MaxError = 3;
-        private Pushover.Pushover PushoverSender;
 
         private bool HasStarted = false;
         private bool HasEnded = false;
-
-        //private Pushover OtherPushover;
 
         public actionClockControl()
         {
@@ -48,16 +44,16 @@ namespace Anachrophobe
         {
             m_Action = actionObject;
             uxNameLabel.Text = m_Action.Name;
-            uxTimeOfAction.Text = Convert.ToDateTime(m_Action.Start).ToString("MM/dd/yyyy hh:mm:ss tt");
+            uxTimeOfAction.Text = m_Action.StartOffset.ToString();
             uxEndOfAction.Text = m_Action.Length.ToString();
-            PushoverSender = new Pushover.Pushover("TOP SECRET");
         }
 
         // This initialization method tells the control if it is the first one in the container form
         public actionClockControl(string initStartTime, string initEndTime, string initName, bool isFirst = false) : this()
         {
             m_ErrorCount = 0;
-            Match matchStart = Regex.Match(initStartTime, @"[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] s?([ap]m)?$", RegexOptions.IgnoreCase);
+            //Match matchStart = Regex.Match(initStartTime, @"[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] s?([ap]m)?$", RegexOptions.IgnoreCase);
+            Match matchStart = Regex.Match(initStartTime, @"[0-9][0-9]:[0-9][0-9]:[0-9][0-9]$", RegexOptions.IgnoreCase);
             Match matchLength = Regex.Match(initEndTime, @"[0-9][0-9]:[0-9][0-9]:[0-9][0-9]$", RegexOptions.IgnoreCase);
 
             if ((matchStart.Success == false) || (matchLength.Success == false) || (initName == ""))
@@ -71,10 +67,9 @@ namespace Anachrophobe
             // Parse all the stuff used to initialize the timer.
             
 
-            uxTimeOfAction.Text = m_Action.Start.ToString();
+            uxTimeOfAction.Text = m_Action.StartOffset.ToString();
             uxEndOfAction.Text = m_Action.Length.ToString();
             uxNameLabel.Text = m_Action.Name;
-            PushoverSender = new Pushover.Pushover("TOP SECRET");
             if (isFirst == true)
                 m_isFirst = true;
             EventMessenger.SendMessage(this, m_Action, true, false);
@@ -104,7 +99,7 @@ namespace Anachrophobe
                 m_BlinkTrack = 0;
                 m_BlinkRunning = false;
                 // Update the screen with current values
-                uxTimeOfAction.Text = m_Action.Start.ToString();
+                uxTimeOfAction.Text = m_Action.StartOffset.ToString();
                 uxEndOfAction.Text = m_Action.Length.ToString();
                 // Make sure the screen has a black background
                 m_Action.Background_Start = Color.Black;
@@ -156,8 +151,6 @@ namespace Anachrophobe
                         if (HasStarted == false)
                         {
                             HasStarted = true;
-                            Thread thread = new Thread(() => PushoverSender.SendMessage("'" + m_Action.Name + "' has started"));
-                            thread.Start();
                         }
                     }
                 }
@@ -180,8 +173,6 @@ namespace Anachrophobe
                         {
                             m_BlinkTrack = 0;
                             blinkTimer.Enabled = true;
-                            Thread thread = new Thread(() => PushoverSender.SendMessage("'" + m_Action.Name + "' is starting."));
-                            thread.Start();
                         }
                     }
                 }
@@ -203,8 +194,6 @@ namespace Anachrophobe
                         {
                             m_BlinkTrack = 0;
                             blinkTimer.Enabled = true;
-                            Thread thread = new Thread(() => PushoverSender.SendMessage("'" + m_Action.Name + "' is ending."));
-                            thread.Start();
                         }
                     }
                 }
@@ -227,8 +216,6 @@ namespace Anachrophobe
                         if (HasEnded == false)
                         {
                             HasEnded = true;
-                            Thread thread = new Thread(() => PushoverSender.SendMessage("'" + m_Action.Name + "' has ended."));
-                            thread.Start();
                         }
                     }
                 }
@@ -375,26 +362,6 @@ namespace Anachrophobe
                 Control control = this.Parent;
                 EventMessenger.SendMessage(this, m_Action, false, true);
                 
-                // This checks if we are the first control, if so, we need to make a new "first" control before self-destructing
-                if (m_isFirst == true)
-                {
-                    // We need to modify the date the next show begins, it is exactly one week after this one.
-                    // Make a new DateTime to help calculate it
-                    DateTime modStart = m_Action.Start;
-                    // It's just easier to do it this way
-                    String modEnd = m_Action.Length.ToString();
-                    // It's really this easy to add 7 days to a datetime? Wow!
-                    modStart = modStart.AddDays(7);
-                    // Re-convert it to a string to pass back to a new actionClockControl
-                    String s_modStart = Convert.ToDateTime(modStart).ToString("MM/dd/yyyy hh:mm:ss tt");
-
-                    // Here's where it starts getting screwey, create a new control
-                    actionClockControl acc = new actionClockControl(s_modStart, modEnd, "YRU-Up", true);
-                    // Set the parent of the control we just made to our parent
-                    acc.Parent = control;
-                    // And show it
-                    acc.Show();
-                }
                 if (this.Parent.Controls.Contains(this) == true)
                 {
                     // Don't dispose until we're removed from the parent
